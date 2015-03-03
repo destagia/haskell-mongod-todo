@@ -15,15 +15,15 @@ import System.IO
 data Command = Insert  { getTag :: String, getData :: String }
              | Delete  { getTag :: String }
              | Update  { getTag :: String }
-			 | Find    { getTag :: String }
-			 | FindAll
-			 | Illegal
-			 deriving Show
+             | Find    { getTag :: String }
+             | FindAll
+             | Illegal
+             deriving Show
 
 main :: IO ()
 main = do
-	args <- getArgs
-	database (argsToCommand args)
+    args <- getArgs
+    database (argsToCommand args)
 
 database :: Command -> IO ()
 database command = do
@@ -36,20 +36,20 @@ argsToCommand :: [String] -> Command
 argsToCommand []         = FindAll
 argsToCommand (x:[])     = Find x
 argsToCommand (x:(y:[])) = if x == "fin"
-							then Delete y
-							else Insert  x y
+                            then Delete y
+                            else Insert  x y
 argsToCommand _          = Illegal
 
 runTodo :: Command -> Action IO ()
 runTodo FindAll = do
-				findAllTodo >>= printDocs "All Todo"
+                findAllTodo >>= printDocs "All Todo"
 runTodo (Find tag) = do
-				(findTodo tag) >>= printDocs ("Tag:" ++ tag)
+                (findTodo tag) >>= printDocs ("Tag:" ++ tag)
 runTodo (Insert tag mes) = do
-				insertTodo tag mes
+                insertTodo tag mes
 runTodo (Delete tag) = do
-				deleteTodo tag
-				liftIO $ (putStrLn $ "delete Tag:" ++ tag)
+                deleteTodo tag
+                liftIO $ (putStrLn $ "delete Tag:" ++ tag)
 
 deleteTodo :: String -> Action IO ()
 deleteTodo tag = delete (select ["tag" =: tag] "list")
